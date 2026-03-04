@@ -1,0 +1,25 @@
+# ============================================================
+# Self-Healing Notification Configuration
+# ============================================================
+# Copy this file to /opt/self-heal/config/notifications.conf
+# and set your actual values
+
+# Slack Configuration (Optional)
+# Get webhook URL from: https://api.slack.com/messaging/webhooks
+SLACK_WEBHOOK_URL=""
+
+# Email Configuration (Disabled - using Grafana instead)
+EMAIL_RECIPIENT="abdelatym00@gmail.com"
+
+# SMS Configuration (Disabled - using Grafana instead)
+AWS_SNS_TOPIC=""
+
+# Enable/Disable channels
+ENABLE_SLACK=false
+ENABLE_EMAIL=false
+ENABLE_SMS=false
+
+# Note: All recommendations will be visible in:
+# - Grafana Dashboard: http://localhost:3000
+# - API Endpoint: http://EC2_IP:5000/recommendations
+# - Log files: /opt/self-heal/logs/recommendations.json
