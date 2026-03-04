@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Self-Healing Control Center</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🔧 Self-Healing Control Center</h1>
+            <p class="subtitle">Intelligent Infrastructure Management</p>
+        </header>
+
+        <!-- Current Status Cards -->
+        <section class="status-grid">
+            <div class="status-card" id="cpu-card">
+                <div class="status-icon">💻</div>
+                <div class="status-info">
+                    <h3>CPU Usage</h3>
+                    <div class="status-value" id="cpu-value">--%</div>
+                    <div class="status-bar">
+                        <div class="status-fill" id="cpu-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="memory-card">
+                <div class="status-icon">🧠</div>
+                <div class="status-info">
+                    <h3>Memory Usage</h3>
+                    <div class="status-value" id="memory-value">--%</div>
+                    <div class="status-bar">
+                        <div class="status-fill" id="memory-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-card" id="disk-card">
+                <div class="status-icon">💾</div>
+                <div class="status-info">
+                    <h3>Disk Usage</h3>
+                    <div class="status-value" id="disk-value">--%</div>
+                    <div class="status-bar">
+                        <div class="status-fill" id="disk-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Alert Section -->
+        <section id="alert-section" class="hidden">
+            <div class="alert-box">
+                <div class="alert-header">
+                    <span class="alert-icon">🚨</span>
+                    <h2 id="alert-title">Active Alert</h2>
+                    <span class="alert-timer" id="alert-timer">⏰ 5:00</span>
+                </div>
+
+                <div class="alert-details" id="alert-details">
+                    <!-- Alert details will be injected here -->
+                </div>
+
+                <div class="alert-files" id="alert-files">
+                    <!-- Large files list will be injected here -->
+                </div>
+
+                <div class="alert-actions">
+                    <button class="action-btn auto" onclick="chooseAction('auto')">
+                        ⚙️ Auto Cleanup
+                        <span id="auto-desc">Automated safe cleanup</span>
+                    </button>
+                    <button class="action-btn manual" onclick="chooseAction('manual')">
+                        🔧 Manual Control
+                        <span id="manual-desc">Choose what to fix</span>
+                    </button>
+                    <button class="action-btn scale" onclick="chooseAction('scale')">
+                        📈 Scale Up
+                        <span id="scale-desc">Expand resources</span>
+                    </button>
+                </div>
+
+                <button class="dismiss-btn" onclick="dismissAlert()">✖ Dismiss</button>
+            </div>
+        </section>
+
+        <!-- No Alert Message -->
+        <section id="no-alert" class="no-alert">
+            <div class="no-alert-content">
+                <div class="success-icon">✅</div>
+                <h2>All Systems Normal</h2>
+                <p>No active alerts. Monitoring continues...</p>
+            </div>
+        </section>
+
+        <!-- Recent Actions History -->
+        <section class="history-section">
+            <h2>📜 Recent Actions</h2>
+            <div class="history-list" id="history-list">
+                <div class="loading">Loading history...</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Last updated: <span id="last-update">--</span></p>
+            <p>
+                <a href="http://35.174.4.152:3000" target="_blank">📊 Grafana</a> |
+                <a href="http://localhost:9090" target="_blank">📈 Prometheus</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
