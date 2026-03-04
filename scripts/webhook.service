@@ -1,0 +1,22 @@
+[Unit]
+Description=Self-Healing Webhook Receiver
+Documentation=https://github.com/your-repo
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/opt/self-heal/scripts
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/usr/bin/python3 /opt/self-heal/scripts/webhook_receiver.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target
