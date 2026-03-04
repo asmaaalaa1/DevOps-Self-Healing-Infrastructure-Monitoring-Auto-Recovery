@@ -1,0 +1,439 @@
+{
+  "id": null,
+  "uid": "self-healing",
+  "title": "🔧 Self-Healing Infrastructure",
+  "tags": ["prometheus", "node-exporter", "self-healing", "monitoring"],
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "version": 0,
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 100,
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0},
+      "type": "stat",
+      "title": "🔥 Current CPU Usage",
+      "targets": [{
+        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\",job=\"ec2-node-exporter\"}[30s])) * 100)",
+        "refId": "A"
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 60, "color": "yellow"},
+              {"value": 80, "color": "red"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 101,
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 0},
+      "type": "stat",
+      "title": "🧠 Current Memory Usage",
+      "targets": [{
+        "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"ec2-node-exporter\"} / node_memory_MemTotal_bytes{job=\"ec2-node-exporter\"})) * 100",
+        "refId": "A"
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 70, "color": "yellow"},
+              {"value": 85, "color": "red"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 102,
+      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0},
+      "type": "stat",
+      "title": "💾 Current Disk Usage",
+      "targets": [{
+        "expr": "(1 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs|vfat\",mountpoint=\"/\",job=\"ec2-node-exporter\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|fuse.lxcfs|squashfs|vfat\",mountpoint=\"/\",job=\"ec2-node-exporter\"})) * 100",
+        "refId": "A"
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"],
+          "fields": ""
+        },
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 70, "color": "yellow"},
+              {"value": 85, "color": "red"}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 1,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "type": "graph",
+      "title": "🔥 CPU Usage",
+      "targets": [{
+        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\",job=\"ec2-node-exporter\"}[30s])) * 100)",
+        "legendFormat": "{{instance}}",
+        "refId": "A"
+      }],
+      "yaxes": [
+        {"format": "percent", "label": "CPU %", "min": 0, "max": 100},
+        {"format": "short", "show": false}
+      ],
+      "xaxis": {"show": true, "mode": "time"},
+      "lines": true,
+      "linewidth": 2,
+      "fill": 1,
+      "fillGradient": 5,
+      "points": false,
+      "pointradius": 2,
+      "bars": false,
+      "stack": false,
+      "percentage": false,
+      "legend": {
+        "show": true,
+        "values": true,
+        "min": true,
+        "max": true,
+        "current": true,
+        "total": false,
+        "avg": true,
+        "alignAsTable": true,
+        "rightSide": false
+      },
+      "nullPointMode": "null",
+      "steppedLine": false,
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "thresholds": [
+        {"value": 60, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(255, 152, 48, 0.2)", "lineColor": "rgb(255, 152, 48)"},
+        {"value": 80, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(237, 46, 24, 0.2)", "lineColor": "rgb(237, 46, 24)"}
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "aliasColors": {},
+      "seriesOverrides": [],
+      "alert": {
+        "name": "High CPU Alert",
+        "message": "CPU usage is above threshold"
+      }
+    },
+    {
+      "id": 2,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "type": "graph",
+      "title": "🧠 Memory Usage",
+      "targets": [{
+        "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"ec2-node-exporter\"} / node_memory_MemTotal_bytes{job=\"ec2-node-exporter\"})) * 100",
+        "legendFormat": "{{instance}}",
+        "refId": "A"
+      }],
+      "yaxes": [
+        {"format": "percent", "label": "Memory %", "min": 0, "max": 100},
+        {"format": "short", "show": false}
+      ],
+      "xaxis": {"show": true, "mode": "time"},
+      "lines": true,
+      "linewidth": 2,
+      "fill": 1,
+      "fillGradient": 5,
+      "points": false,
+      "pointradius": 2,
+      "bars": false,
+      "stack": false,
+      "legend": {
+        "show": true,
+        "values": true,
+        "min": true,
+        "max": true,
+        "current": true,
+        "avg": true,
+        "alignAsTable": true,
+        "rightSide": false
+      },
+      "nullPointMode": "null",
+      "steppedLine": false,
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "thresholds": [
+        {"value": 70, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(255, 152, 48, 0.2)", "lineColor": "rgb(255, 152, 48)"},
+        {"value": 85, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(237, 46, 24, 0.2)", "lineColor": "rgb(237, 46, 24)"}
+      ]
+    },
+    {
+      "id": 3,
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "type": "graph",
+      "title": "💾 Disk Usage",
+      "targets": [{
+        "expr": "(1 - (node_filesystem_avail_bytes{job=\"ec2-node-exporter\",mountpoint=\"/\"} / node_filesystem_size_bytes{job=\"ec2-node-exporter\",mountpoint=\"/\"})) * 100",
+        "legendFormat": "{{instance}}",
+        "refId": "A"
+      }],
+      "yaxes": [
+        {"format": "percent", "label": "Disk %", "min": 0, "max": 100},
+        {"format": "short", "show": false}
+      ],
+      "xaxis": {"show": true, "mode": "time"},
+      "lines": true,
+      "linewidth": 2,
+      "fill": 1,
+      "fillGradient": 5,
+      "points": false,
+      "pointradius": 2,
+      "bars": false,
+      "stack": false,
+      "legend": {
+        "show": true,
+        "values": true,
+        "min": true,
+        "max": true,
+        "current": true,
+        "avg": true,
+        "alignAsTable": true,
+        "rightSide": false
+      },
+      "nullPointMode": "null",
+      "steppedLine": false,
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "thresholds": [
+        {"value": 75, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(255, 152, 48, 0.2)", "lineColor": "rgb(255, 152, 48)"},
+        {"value": 85, "colorMode": "custom", "op": "gt", "fill": true, "line": true, "fillColor": "rgba(237, 46, 24, 0.2)", "lineColor": "rgb(237, 46, 24)"}
+      ]
+    },
+    {
+      "id": 4,
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "type": "graph",
+      "title": "🌐 Network Traffic",
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total{job=\"ec2-node-exporter\",device!~\"lo|veth.*\"}[30s])",
+          "legendFormat": "RX {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total{job=\"ec2-node-exporter\",device!~\"lo|veth.*\"}[30s])",
+          "legendFormat": "TX {{device}}",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        {"format": "Bps", "label": "Bytes/sec", "logBase": 1},
+        {"format": "short", "show": false}
+      ],
+      "xaxis": {"show": true, "mode": "time"},
+      "lines": true,
+      "linewidth": 2,
+      "fill": 1,
+      "fillGradient": 3,
+      "points": false,
+      "pointradius": 2,
+      "bars": false,
+      "stack": false,
+      "legend": {
+        "show": true,
+        "values": true,
+        "min": false,
+        "max": true,
+        "current": true,
+        "avg": true,
+        "alignAsTable": true,
+        "rightSide": false
+      },
+      "nullPointMode": "null as zero",
+      "steppedLine": false,
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "seriesOverrides": [
+        {
+          "alias": "/TX.*/",
+          "transform": "negative-Y"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "gridPos": {"h": 6, "w": 24, "x": 0, "y": 16},
+      "type": "text",
+      "title": "📋 Self-Healing Recommendations & Actions",
+      "options": {
+        "mode": "markdown",
+        "content": "## 🔧 System Recommendations\n\n### 📊 **View Recommendations:**\n```bash\n# Via API (replace 44.211.39.181 with actual IP)\ncurl http://44.211.39.181:5000/recommendations | jq '.'\n\n# On EC2 directly\nssh ec2-user@44.211.39.181 'cat /opt/self-heal/logs/recommendations.json | jq .'\n```\n\n---\n\n### ✅ **Approve Action:**\n```bash\ncurl -X POST http://44.211.39.181:5000/approve-action \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action\":\"upgrade_instance\",\"resource\":\"CPU\",\"details\":{\"from\":\"t3.micro\",\"to\":\"t3.small\"}}'\n```\n\n### ❌ **Dismiss Recommendation:**\n```bash\ncurl -X POST http://44.211.39.181:5000/dismiss-recommendation \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"recommendation_id\":\"rec_123\",\"reason\":\"Not needed at this time\"}'\n```\n\n---\n\n### 🔗 **Quick Links:**\n- 🎯 [Prometheus Alerts](http://localhost:9090/alerts) - View firing alerts\n- 📊 [Prometheus Targets](http://localhost:9090/targets) - Check scrape status  \n- 🔔 [Alertmanager](http://localhost:9093) - Alert routing status\n- 📝 [Recommendations API](http://44.211.39.181:5000/recommendations) - JSON endpoint\n- ❤️ [Health Check](http://44.211.39.181:5000/health) - Service status\n\n---\n\n### 📂 **Log Files (on EC2):**\n```bash\n# Healing execution logs\ntail -f /opt/self-heal/logs/self_heal.log\n\n# Recommendations (JSON)\ncat /opt/self-heal/logs/recommendations.json | jq '.'\n\n# Approved actions\ncat /opt/self-heal/logs/approvals.log\n\n# Dismissed recommendations  \ncat /opt/self-heal/logs/dismissals.log\n\n# Webhook receiver logs\ntail -f /opt/self-heal/logs/webhook.log\n```\n\n---\n\n### 🎨 **Alert Color Guide:**\n- 🟢 **Green (0-60%)**: Normal - System healthy\n- 🟡 **Yellow (60-80%)**: Warning - Monitor closely  \n- 🔴 **Red (>80%)**: Critical - Self-healing activated\n"
+      }
+    },
+    {
+      "id": 6,
+      "gridPos": {"h": 4, "w": 8, "x": 0, "y": 22},
+      "type": "stat",
+      "title": "🚨 Active Alerts",
+      "targets": [{
+        "expr": "count(ALERTS{alertstate=\"firing\"})",
+        "refId": "A",
+        "instant": true
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 1, "color": "yellow"},
+              {"value": 3, "color": "red"}
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      }
+    },
+    {
+      "id": 7,
+      "gridPos": {"h": 4, "w": 8, "x": 8, "y": 22},
+      "type": "stat",
+      "title": "💚 System Status",
+      "targets": [{
+        "expr": "up{job=\"ec2-node-exporter\"}",
+        "refId": "A",
+        "instant": true
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "background",
+        "textMode": "name",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 1, "color": "green"}
+            ]
+          },
+          "mappings": [
+            {"type": "value", "options": {"0": {"text": "🔴 DOWN", "color": "red"}}},
+            {"type": "value", "options": {"1": {"text": "🟢 HEALTHY", "color": "green"}}}
+          ],
+          "unit": "short"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "gridPos": {"h": 4, "w": 8, "x": 16, "y": 22},
+      "type": "stat",
+      "title": "⏱️ System Uptime",
+      "targets": [{
+        "expr": "time() - node_boot_time_seconds{job=\"ec2-node-exporter\"}",
+        "refId": "A",
+        "instant": true
+      }],
+      "options": {
+        "graphMode": "area",
+        "colorMode": "value",
+        "textMode": "value",
+        "orientation": "auto",
+        "reduceOptions": {
+          "values": false,
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "blue"},
+              {"value": 3600, "color": "green"},
+              {"value": 86400, "color": "super-light-green"}
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
