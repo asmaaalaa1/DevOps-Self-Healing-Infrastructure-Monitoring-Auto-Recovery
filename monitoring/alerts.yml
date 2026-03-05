@@ -1,0 +1,144 @@
+# Alert Rules for Self-Healing Infrastructure
+groups:
+  - name: system_alerts
+    interval: 30s
+    rules:
+      # ================================
+      # CPU Alerts
+      # ================================
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 30s
+        labels:
+          severity: critical
+          component: cpu
+          action: handle_high_cpu
+        annotations:
+          summary: "High CPU usage detected on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% for more than 30 seconds"
+          
+      - alert: ModerateCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 60
+        for: 5m
+        labels:
+          severity: warning
+          component: cpu
+          action: monitor
+        annotations:
+          summary: "Moderate CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}%"
+
+      # ================================
+      # Memory Alerts
+      # ================================
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 75
+        for: 30s
+        labels:
+          severity: critical
+          component: memory
+          action: handle_high_memory
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% for more than 30 seconds"
+          value: "{{ $value }}"
+          
+      - alert: ModerateMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 70
+        for: 5m
+        labels:
+          severity: warning
+          component: memory
+          action: monitor
+        annotations:
+          summary: "Moderate memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}%"
+
+      # ================================
+      # Disk Alerts
+      # ================================
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes)) * 100 > 85
+        for: 30s
+        labels:
+          severity: critical
+          component: disk
+          action: handle_disk_alert
+        annotations:
+          summary: "High disk usage on {{ $labels.instance }}"
+          description: "Disk usage on {{ $labels.mountpoint }} is {{ $value | humanize }}%"
+          
+      - alert: ModerateDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} / node_filesystem_size_bytes)) * 100 > 70
+        for: 10m
+        labels:
+          severity: warning
+          component: disk
+          action: monitor
+        annotations:
+          summary: "Moderate disk usage on {{ $labels.instance }}"
+          description: "Disk usage on {{ $labels.mountpoint }} is {{ $value | humanize }}%"
+
+      # ================================
+      # Network Alerts
+      # ================================
+      - alert: HighNetworkErrors
+        expr: rate(node_network_receive_errs_total[5m]) > 10 or rate(node_network_transmit_errs_total[5m]) > 10
+        for: 3m
+        labels:
+          severity: critical
+          component: network
+          action: handle_network_issue
+        annotations:
+          summary: "High network errors on {{ $labels.instance }}"
+          description: "Network interface {{ $labels.device }} has high error rate"
+          
+      - alert: HighNetworkDrops
+        expr: rate(node_network_receive_drop_total[5m]) > 10 or rate(node_network_transmit_drop_total[5m]) > 10
+        for: 3m
+        labels:
+          severity: warning
+          component: network
+          action: handle_network_issue
+        annotations:
+          summary: "High network packet drops on {{ $labels.instance }}"
+          description: "Network interface {{ $labels.device }} is dropping packets"
+
+      # ================================
+      # Service Health Alerts
+      # ================================
+      - alert: ServiceDown
+        expr: up{job="ec2-node-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: service
+          action: restart_service
+        annotations:
+          summary: "Service is down on {{ $labels.instance }}"
+          description: "The service has been down for more than 1 minute"
+          
+      - alert: NodeExporterDown
+        expr: up{job="ec2-node-exporter"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          component: monitoring
+          action: restart_service
+        annotations:
+          summary: "Node Exporter is down on {{ $labels.instance }}"
+          description: "Cannot scrape metrics from Node Exporter"
+
+      # ================================
+      # Load Average Alerts
+      # ================================
+      - alert: HighLoadAverage
+        expr: node_load15 / count(node_cpu_seconds_total{mode="idle"}) without(cpu,mode) > 2
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+          action: handle_high_cpu
+        annotations:
+          summary: "High load average on {{ $labels.instance }}"
+          description: "Load average (15m) is {{ $value | humanize }} per CPU core"

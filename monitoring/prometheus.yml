@@ -1,0 +1,45 @@
+# Prometheus Configuration
+global:
+  scrape_interval: 15s      # جمع البيانات كل 15 ثانية
+  evaluation_interval: 15s  # تقييم القواعد كل 15 ثانية
+  external_labels:
+    monitor: 'graduation-project'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load alert rules
+rule_files:
+  - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus نفسه
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          instance: 'prometheus-server'
+
+  # Node Exporter على EC2
+  - job_name: 'ec2-node-exporter'
+    static_configs:
+      - targets: ['13.221.236.182:9100']  # ⚠️ غير الـ IP بتاع EC2 هنا
+        labels:
+          instance: 'web-server'
+          environment: 'production'
+          service: 'patient-web-app'
+    
+    # إعدادات إضافية - سرعة أعلى لمراقبة real-time
+    scrape_interval: 5s
+    scrape_timeout: 3s
+
+  # يمكنك إضافة المزيد من targets هنا
+  # - job_name: 'another-service'
+  #   static_configs:
+  #     - targets: ['another-ip:port']
