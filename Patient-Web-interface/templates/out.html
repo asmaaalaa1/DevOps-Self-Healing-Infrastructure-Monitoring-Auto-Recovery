@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Result</h2>
+    </div>
+    <div class="card-body">
+        {% if Statues %}
+            <div class="alert alert-info" role="alert">
+                {{ Statues }}
+            </div>
+        {% endif %}
+        <dl class="row">
+            {% for line in output.split("<br>") %}
+                {% set parts = line.split(": ", 1) %}
+                {% if parts|length == 2 %}
+                    <dt class="col-sm-3">{{ parts[0]|trim }}</dt>
+                    <dd class="col-sm-9">{{ parts[1]|trim }}</dd>
+                {% else %}
+                    <dd class="col-sm-12">{{ line|trim }}</dd>
+                {% endif %}
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+{% endblock content %}

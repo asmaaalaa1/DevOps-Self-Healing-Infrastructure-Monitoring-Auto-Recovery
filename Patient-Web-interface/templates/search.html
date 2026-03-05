@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Search For a User</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for("search") }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.NID.label(class="form-label") }}
+                {{ form.NID(class="form-control") }}
+            </div>
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
