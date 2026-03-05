@@ -1,0 +1,69 @@
+# Terraform
+*.tfstate
+*.tfstate.backup
+*.tfstate.*.backup
+.terraform/
+.terraform.lock.hcl
+*.pem
+*.key
+terraform.tfvars
+terraform.tfvars.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+instance/
+
+# Logs
+logs/
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Grafana (keep structure but ignore data)
+monitoring/grafana/data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.tmp
+
+# Secrets & Credentials
+*.secret
+.env
+*.pem
+*.key
+web-server-key.pem
+*_rsa
+*_rsa.pub
+credentials.json
+secrets.yml
+
+# AWS
+.aws/
+*.credentials
+
+# Test artifacts
+stress_tests.log
+*.dat
+credentials.json
